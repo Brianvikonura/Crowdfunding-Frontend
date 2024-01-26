@@ -1,4 +1,4 @@
-# nura-fund-frontend-2
+# Crowdfunding-Frontend
 
 ## Build Setup
 
