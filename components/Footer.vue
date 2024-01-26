@@ -1,5 +1,5 @@
 <template>
-  <footer class="py-20 text-lg text-white bg-purple-progress">
+  <footer class="px-32 py-20 text-lg text-white bg-purple-progress">
     <div class="container mx-auto">
       <div class="mb-4 sm:flex">
         <div class="h-auto mt-8 sm:w-1/2 sm:mt-0">
