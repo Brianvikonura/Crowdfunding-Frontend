@@ -96,251 +96,57 @@
           >
         </div>
       </div>
-      <div class="flex mt-3 -mx-6">
+      <div class="grid grid-cols-3 gap-4 mt-3">
         <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
+          v-for="campaign in campaigns.data"
+          :key="campaign.id"
+          class="w-full p-5 border border-gray-500 card-project rounded-20"
         >
           <div class="item">
             <figure class="item-image">
               <img
-                src="/project-thumbnail-1.jpg"
+                :src="$axios.defaults.baseURL + '/' + campaign.image_url"
                 alt=""
                 class="w-full rounded-20"
               />
             </figure>
             <div class="item-meta">
               <h4 class="mt-5 text-3xl font-medium text-gray-900">
-                Robotic Hand
+                {{ campaign.name }}
               </h4>
-              <p class="font-light text-gray-900 text-md">
-                Creating robotic hand for better movement
+              <p class="h-12 font-light text-gray-900 text-md">
+                {{ campaign.short_description }}
               </p>
               <div class="relative pt-4 progress-bar">
                 <div
                   class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
                 >
                   <div
-                    style="width: 20%"
+                    style="'width: ' + (campaign.current_amount / campaign.goal_amount) * 100 + '%' "
                     class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
                   ></div>
                 </div>
               </div>
               <div class="flex progress-info">
-                <div>20%</div>
-                <div class="ml-auto font-semibold">Rp 100.000.000</div>
+                <div>
+                  {{ (campaign.current_amount / campaign.goal_amount) * 100 }} %
+                </div>
+                <div class="ml-auto font-semibold">
+                  Rp {{ new Intl.NumberFormat().format(campaign.goal_amount) }}
+                </div>
               </div>
             </div>
-            <nuxt-link
-              to="/projects/1"
+            <button
+              @click="
+                $router.push({
+                  name: 'projects-id',
+                  params: { id: campaign.id },
+                })
+              "
               class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
             >
               Fund Now
-            </nuxt-link>
-          </div>
-        </div>
-        <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
-        >
-          <div class="item">
-            <figure class="item-image">
-              <img
-                src="/project-thumbnail-2.jpg"
-                alt=""
-                class="w-full rounded-20"
-              />
-            </figure>
-            <div class="item-meta">
-              <h4 class="mt-5 text-3xl font-medium text-gray-900">
-                Auto Pilot Drone
-              </h4>
-              <p class="font-light text-gray-900 text-md">
-                Self driving drone, no worry to drive again
-              </p>
-              <div class="relative pt-4 progress-bar">
-                <div
-                  class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
-                >
-                  <div
-                    style="width: 45%"
-                    class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex progress-info">
-                <div>45%</div>
-                <div class="ml-auto font-semibold">Rp 80.000.000</div>
-              </div>
-              <nuxt-link
-                to="/projects/2"
-                class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
-              >
-                Fund Now
-              </nuxt-link>
-            </div>
-          </div>
-        </div>
-        <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
-        >
-          <div class="item">
-            <figure class="item-image">
-              <img
-                src="/project-thumbnail-3.jpg"
-                alt=""
-                class="w-full rounded-20"
-              />
-            </figure>
-            <div class="item-meta">
-              <h4 class="mt-5 text-3xl font-medium text-gray-900">Wireboard</h4>
-              <p class="font-light text-gray-900 text-md">
-                The new era of mechanical keyboard
-              </p>
-              <div class="relative pt-4 progress-bar">
-                <div
-                  class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
-                >
-                  <div
-                    style="width: 80%"
-                    class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex progress-info">
-                <div>80%</div>
-                <div class="ml-auto font-semibold">Rp 40.000.000</div>
-              </div>
-              <nuxt-link
-                to="/projects/3"
-                class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
-              >
-                Fund Now
-              </nuxt-link>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex mt-3 -mx-6">
-        <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
-        >
-          <div class="item">
-            <figure class="item-image">
-              <img
-                src="/project-thumbnail-4.jpg"
-                alt=""
-                class="w-full rounded-20"
-              />
-            </figure>
-            <div class="item-meta">
-              <h4 class="mt-5 text-3xl font-medium text-gray-900">
-                Wireless Earphone
-              </h4>
-              <p class="font-light text-gray-900 text-md">
-                Just pair to phone and ready to set
-              </p>
-              <div class="relative pt-4 progress-bar">
-                <div
-                  class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
-                >
-                  <div
-                    style="width: 45%"
-                    class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex progress-info">
-                <div>45%</div>
-                <div class="ml-auto font-semibold">Rp 55.000.000</div>
-              </div>
-              <nuxt-link
-                to="/projects/4"
-                class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
-              >
-                Fund Now
-              </nuxt-link>
-            </div>
-          </div>
-        </div>
-        <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
-        >
-          <div class="item">
-            <figure class="item-image">
-              <img
-                src="/project-thumbnail-5.jpg"
-                alt=""
-                class="w-full rounded-20"
-              />
-            </figure>
-            <div class="item-meta">
-              <h4 class="mt-5 text-3xl font-medium text-gray-900">
-                Auto Heater
-              </h4>
-              <p class="font-light text-gray-900 text-md">
-                Make the room keep warm automatically
-              </p>
-              <div class="relative pt-4 progress-bar">
-                <div
-                  class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
-                >
-                  <div
-                    style="width: 70%"
-                    class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex progress-info">
-                <div>70%</div>
-                <div class="ml-auto font-semibold">Rp 75.000.000</div>
-              </div>
-              <nuxt-link
-                to="/projects/5"
-                class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
-              >
-                Fund Now
-              </nuxt-link>
-            </div>
-          </div>
-        </div>
-        <div
-          class="w-1/3 p-5 mx-6 my-4 border border-gray-500 card-project rounded-20"
-        >
-          <div class="item">
-            <figure class="item-image">
-              <img
-                src="/project-thumbnail-6.jpg"
-                alt=""
-                class="w-full rounded-20"
-              />
-            </figure>
-            <div class="item-meta">
-              <h4 class="mt-5 text-3xl font-medium text-gray-900">
-                Smart Lock
-              </h4>
-              <p class="font-light text-gray-900 text-md">
-                Open the door with just one tap and click
-              </p>
-              <div class="relative pt-4 progress-bar">
-                <div
-                  class="flex h-2 h-3 mb-4 overflow-hidden text-xs bg-gray-200 rounded rounded-lg"
-                >
-                  <div
-                    style="width: 10%"
-                    class="flex flex-col justify-center text-center text-white shadow-none whitespace-nowrap bg-purple-progress progress-striped"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex progress-info">
-                <div>10%</div>
-                <div class="ml-auto font-semibold">Rp 35.000.000</div>
-              </div>
-              <nuxt-link
-                to="/projects/6"
-                class="block w-full px-6 py-2 mt-5 text-lg font-semibold text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button"
-              >
-                Fund Now
-              </nuxt-link>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -395,3 +201,12 @@
     <Footer />
   </div>
 </template>
+
+<script>
+export default {
+  async asyncData({ $axios }) {
+    const campaigns = await $axios.$get('/api/v1/campaigns')
+    return { campaigns }
+  },
+}
+</script>
