@@ -42,7 +42,9 @@
             <div class="flex mt-3">
               <div class="w-1/4">
                 <img
-                  src="/testimonial-1-icon.png"
+                  :src="
+                    $axios.defaults.baseURL + '/' + campaign.data.user.image_url
+                  "
                   alt=""
                   class="inline-block w-full rounded-full"
                 />
@@ -63,18 +65,29 @@
                 {{ perk }}
               </li>
             </ul>
-            <input
-              type="number"
-              class="block w-full px-6 py-3 mt-4 text-gray-800 transition duration-300 ease-in-out border border-gray-500 rounded-full focus:outline-none focus:shadow-outline"
-              placeholder="Amount in Rp"
-              value=""
-            />
-            <nuxt-link
-              to="/fund-success"
-              class="block w-full px-6 py-3 mt-3 font-medium text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button text-md"
-            >
-              Fund Now
-            </nuxt-link>
+            <template v-if="this.$store.state.auth.loggedIn">
+              <input
+                type="number"
+                class="block w-full px-6 py-3 mt-4 text-gray-800 transition duration-300 ease-in-out border border-gray-500 rounded-full focus:outline-none focus:shadow-outline"
+                placeholder="Amount in Rp"
+                v-model.number="transactions.amount"
+                @keyup.enter="fund"
+              />
+              <button
+                @click="fund"
+                class="block w-full px-6 py-3 mt-3 font-medium text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button text-md"
+              >
+                Fund Now
+              </button>
+            </template>
+            <template v-else>
+              <button
+                @click="$router.push({ path: '/login' })"
+                class="block w-full px-6 py-3 mt-3 font-medium text-center text-white rounded-full button-cta bg-orange-button hover:bg-green-button text-md"
+              >
+                Sign in to Fund
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -133,11 +146,28 @@ export default {
   data() {
     return {
       default_image: '',
+      transactions: {
+        amount: 0,
+        campaign_id: Number.parseInt(this.$route.params.id),
+        code: ''
+      },
     }
   },
   methods: {
     changeImage(url) {
       this.default_image = url
+    },
+    async fund() {
+      try {
+        let response = await this.$axios.post(
+          '/api/v1/transactions',
+          this.transactions
+        )
+        window.location = response.data.data.payment_url
+        console.log(response.data.data.payment_url)
+      } catch (error) {
+        console.log(error)
+      }
     },
   },
   mounted() {
