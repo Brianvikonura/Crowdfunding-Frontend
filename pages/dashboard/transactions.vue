@@ -31,20 +31,33 @@
       </div>
       <hr />
       <div class="block mb-2">
-        <div class="w-full mb-4 lg:max-w-full lg:flex" v-for="i in 5" :key="i">
+        <div
+          class="w-full mb-4 lg:max-w-full lg:flex"
+          v-for="transaction in transactions.data"
+          :key="transaction.id"
+        >
           <div
             class="flex-none h-48 overflow-hidden text-center bg-cover rounded-t lg:h-auto lg:w-48 lg:rounded-t-none lg:rounded-l"
-            style="background-color: #bbb"
+            :style="
+              'background-color: #bbb; background-position: center; background-image: url(\'' +
+              $axios.defaults.baseURL +
+              '/' +
+              transaction.campaign.image_url +
+              '\')'
+            "
           ></div>
           <div
             class="flex flex-col justify-between w-full p-8 leading-normal bg-white border-b border-l border-r border-gray-400 rounded-b lg:border-l-0 lg:border-t lg:border-gray-400 lg:rounded-b-none lg:rounded-r"
           >
             <div>
               <div class="mb-1 text-xl font-bold text-gray-900">
-                Cari Uang Buat Gunpla
+                {{ transaction.campaign.name }}
               </div>
               <p class="flex items-center mb-2 text-sm text-gray-600">
-                Rp. 200.000.000 &middot; 27 Januari 2024
+                Rp
+                {{ new Intl.NumberFormat().format(transaction.amount) }}
+                &middot; {{ transaction.created_at }}
+                &middot; {{ transaction.status }}
               </p>
             </div>
           </div>
@@ -56,3 +69,13 @@
     <Footer />
   </div>
 </template>
+
+<script>
+export default {
+  middleware: 'auth',
+  async asyncData({ $axios, app }) {
+    const transactions = await $axios.$get('/api/v1/transactions')
+    return { transactions }
+  },
+}
+</script>
