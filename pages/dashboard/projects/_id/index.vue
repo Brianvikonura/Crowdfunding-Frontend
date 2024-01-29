@@ -17,7 +17,10 @@
         </div>
         <div class="w-1/4 text-right">
           <nuxt-link
-            to="/dashboard/projects/create"
+            :to="{
+              name: 'dashboard-projects-id-edit',
+              params: { id: campaign.data.id },
+            }"
             class="inline-flex items-center px-4 py-1 font-bold text-white rounded bg-green-button hover:bg-green-button"
           >
             Edit
@@ -31,36 +34,35 @@
           >
             <div>
               <div class="mb-2 text-xl font-bold text-gray-900">
-                Cari Uang Buat Gunpla
+                {{ campaign.data.name }}
               </div>
               <p class="flex items-center mb-1 text-sm font-bold">
+                Short Description
+              </p>
+              <p class="text-base text-gray-700">
+                {{ campaign.data.short_description }}
+              </p>
+              <p class="flex items-center mt-3 mb-1 text-sm font-bold">
                 Description
               </p>
               <p class="text-base text-gray-700">
-                Designed to fit your dedicated typing experience. No matter what
-                you like, linear, clicky or a little in between, we’ve got you
-                covered with three Gateron switches options (Blue, Brown, Red).
-                With a lifespan of 50 million keystroke lifespan we want to make
-                sure that you experience same feedback for every keystroke.
-              </p>
-              <p class="text-base text-gray-700">
-                With N-key rollover (NKRO on wired mode only) you can register
-                as many keys as you can press at once without missing out
-                characters. It allows to use all the same media keys as
-                conventional macOS.
+                {{ campaign.data.description }}
               </p>
               <p class="flex items-center mt-4 mb-1 text-sm font-bold">
                 What Will Funders Get
               </p>
               <ul class="ml-5 list-disc">
-                <li>Equity of the startup directly from the founder</li>
-                <li>Special service or product that startup has</li>
-                <li>
-                  You can also sell your equity once the startup going IPO
+                <li v-for="perk in campaign.data.perks" :key="perk">
+                  {{ perk }}
                 </li>
               </ul>
-              <p class="flex items-center mt-4 mb-1 text-sm font-bold">Price</p>
-              <p class="text-4xl text-gray-700">200.000</p>
+              <p class="flex items-center mt-4 mb-1 text-sm font-bold">
+                Goal amount
+              </p>
+              <p class="text-4xl text-gray-700">
+                Rp.
+                {{ new Intl.NumberFormat().format(campaign.data.goal_amount) }}
+              </p>
             </div>
           </div>
         </div>
@@ -83,44 +85,28 @@
           class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
         >
           <figure class="item-thumbnail">
-            <img
-              src="/project-slider-1.jpg"
-              alt=""
-              class="w-full rounded"
-            />
+            <img src="/project-slider-1.jpg" alt="" class="w-full rounded" />
           </figure>
         </div>
         <div
           class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
         >
           <figure class="item-thumbnail">
-            <img
-              src="/project-slider-2.jpg"
-              alt=""
-              class="w-full rounded"
-            />
+            <img src="/project-slider-2.jpg" alt="" class="w-full rounded" />
           </figure>
         </div>
         <div
           class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
         >
           <figure class="item-thumbnail">
-            <img
-              src="/project-slider-3.jpg"
-              alt=""
-              class="w-full rounded"
-            />
+            <img src="/project-slider-3.jpg" alt="" class="w-full rounded" />
           </figure>
         </div>
         <div
           class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
         >
           <figure class="item-thumbnail">
-            <img
-              src="/project-slider-4.jpg"
-              alt=""
-              class="w-full rounded"
-            />
+            <img src="/project-slider-4.jpg" alt="" class="w-full rounded" />
           </figure>
         </div>
       </div>
@@ -130,16 +116,24 @@
         </div>
       </div>
       <div class="block mb-2">
-        <div class="w-full mb-4 lg:max-w-full lg:flex">
+        <div
+          class="w-full mb-4 lg:max-w-full lg:flex"
+          v-for="transaction in transactions.data"
+          :key="transaction.id"
+        >
           <div
             class="flex flex-col justify-between w-full p-8 leading-normal bg-white border border-gray-400 rounded lg:border-gray-400"
           >
             <div>
               <div class="mb-1 text-xl font-bold text-gray-900">
-                Brian Viko Nura
+                {{ transaction.name }}
               </div>
               <p class="flex items-center mb-2 text-sm text-gray-600">
-                Rp. 200.000 &middot; 27 Januari 2024
+                Rp.
+                {{
+                  new Intl.NumberFormat().format(transaction.amount)
+                }}
+                &middot; {{ transaction.created_at }}
               </p>
             </div>
           </div>
@@ -151,3 +145,17 @@
     <Footer />
   </div>
 </template>
+
+<script>
+export default {
+  middleware: 'auth',
+  async asyncData({ $axios, params }) {
+    const campaign = await $axios.$get('/api/v1/campaigns/' + params.id)
+    const transactions = await $axios.$get(
+      '/api/v1/campaigns/' + params.id + '/transactions'
+    )
+
+    return { campaign, transactions }
+  },
+}
+</script>
