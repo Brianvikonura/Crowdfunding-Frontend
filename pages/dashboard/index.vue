@@ -24,7 +24,7 @@
         </div>
         <div class="w-1/4 text-right">
           <nuxt-link
-            to="/dashboard/create"
+            to="/dashboard/projects/create"
             class="inline-flex items-center px-4 py-4 font-bold text-white rounded bg-orange-button hover:bg-green-button"
           >
             + Create Campaign
