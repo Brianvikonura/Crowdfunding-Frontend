@@ -68,45 +68,36 @@
         </div>
       </div>
       <div class="flex items-center justify-between">
-        <div class="w-3/4 mr-6">
+        <div class="w-2/4 mr-6">
           <h3 class="mt-5 mb-4 text-2xl text-gray-900">Gallery</h3>
         </div>
-        <div class="w-1/4 text-right">
-          <a
-            href="#"
-            class="inline-flex items-center px-4 py-1 font-bold text-white rounded bg-green-button hover:bg-green-button"
+        <div class="w-2/4 text-right">
+          <input
+            type="file"
+            ref="file"
+            @change="selectFile"
+            class="p-1 overflow-hidden border rounded"
+          />
+          <button
+            @click="upload"
+            class="inline-flex items-center px-4 py-2 font-bold text-white rounded bg-green-button hover:bg-green-button"
           >
             Upload
-          </a>
+          </button>
         </div>
       </div>
-      <div class="flex -mx-2">
+      <div class="grid grid-cols-4 gap-4 -mx-2">
         <div
-          class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
+          class="relative w-full p-2 m-2 bg-white border border-gray-400 rounded"
+          v-for="image in campaign.data.images"
+          :key="image.image_url"
         >
           <figure class="item-thumbnail">
-            <img src="/project-slider-1.jpg" alt="" class="w-full rounded" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-2.jpg" alt="" class="w-full rounded" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-3.jpg" alt="" class="w-full rounded" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 p-2 m-2 bg-white border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-4.jpg" alt="" class="w-full rounded" />
+            <img
+              :src="$axios.defaults.baseURL + '/' + image.image_url"
+              alt=""
+              class="w-full rounded"
+            />
           </figure>
         </div>
       </div>
@@ -130,9 +121,7 @@
               </div>
               <p class="flex items-center mb-2 text-sm text-gray-600">
                 Rp.
-                {{
-                  new Intl.NumberFormat().format(transaction.amount)
-                }}
+                {{ new Intl.NumberFormat().format(transaction.amount) }}
                 &middot; {{ transaction.created_at }}
               </p>
             </div>
@@ -156,6 +145,49 @@ export default {
     )
 
     return { campaign, transactions }
+  },
+
+  data() {
+    return {
+      selectedFiles: undefined,
+    }
+  },
+
+  methods: {
+    selectFile() {
+      this.selectedFiles = this.$refs.file.files
+    },
+    async load() {
+      const campaign = await this.$axios.$get(
+        '/api/v1/campaigns/' + this.$route.params.id
+      )
+      this.campaign = campaign
+    },
+    async upload(file) {
+      let formData = new FormData()
+
+      formData.append('campaign_id', this.$route.params.id)
+      formData.append('file', this.selectedFiles.item(0))
+      formData.append('is_primary', true)
+
+      try {
+        let response = await this.$axios.post(
+          '/api/v1/campaign-images',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        console.log(response)
+
+        this.load()
+        this.selectFiles = undefined
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
 }
 </script>
